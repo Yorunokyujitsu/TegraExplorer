@@ -78,6 +78,8 @@ typedef enum {
 
 char* end;
 
+#define LP_VER "1.0.4"
+
 u8 nextToken(char** inPtr, void** val) {
 	char* in = *inPtr;
 	u8 ret = Token_Err;
@@ -232,7 +234,7 @@ u8 nextToken(char** inPtr, void** val) {
 				if (!memcmp(t.strToken, in, (t.strToken[1] == '\0') ? 1 : 2)) {
 					//gfx_printf("Token: '%s'\n", t.strToken);
 					ret = Token_Token;
-					*val = t.token;
+					*val = (void*)t.token;
 
 					if (t.strToken[1] != '\0')
 						in++;

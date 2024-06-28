@@ -18,14 +18,15 @@
 #include <string.h>
 #include "../fs/fscopy.h"
 #include "../utils/utils.h"
+#include <display/di.h>
 
 extern sdmmc_storage_t sd_storage;
 extern bool is_sd_inited;
 
 MenuEntry_t FatAndEmu[] = {
 	{.optionUnion = COLORTORGB(COLOR_ORANGE), .name = "Back to main menu"},
-	{.optionUnion = COLORTORGB(COLOR_GREEN), .name = "Fat32 + EmuMMC"},
-	{.optionUnion = COLORTORGB(COLOR_BLUE), .name = "Only Fat32"}
+	{.optionUnion = COLORTORGB(COLOR_GREEN), .name = "FAT32 + emuMMC"},
+	{.optionUnion = COLORTORGB(COLOR_BLUE), .name = "Only FAT32"}
 };
 
 void FormatSD(){
@@ -38,7 +39,7 @@ void FormatSD(){
 	if (!is_sd_inited || sd_get_card_removed())
 		return;
 
-	gfx_printf("\nDo you want to partition for an emummc?\n");
+	gfx_printf("\nDo you want to partition for an emuMMC?\n");
 	res = MakeHorizontalMenu(FatAndEmu, ARR_LEN(FatAndEmu), 3, COLOR_DEFAULT, 0);
 	
 	if (!res)
@@ -51,7 +52,7 @@ void FormatSD(){
 	plist[0] = sd_storage.csd.capacity;
 	if (emummc){
 		if (plist[0] < 83886080){
-            gfx_printf("\n\nYou seem to be running this on a 32GB or smaller SD\nNot enough free space for emummc!");
+            gfx_printf("\n\nYou seem to be running this on a 32GB or smaller SD Card\nNot enough free space for emuMMC!");
 			hidWait();
 			return;
         }
@@ -61,7 +62,7 @@ void FormatSD(){
 		plist[0] = allignedSectors;
 	}
 
-	gfx_printf("\n\nAre you sure you want to format your sd?\nThis will delete everything on your SD card!\nThis action is irreversible!\n\n");
+	gfx_printf("\n\nAre you sure you want to format your SD Card?\nThis will delete everything on your SD Card!\nThis action is irreversible!\n\n");
 	WaitFor(1500);
 
 	gfx_printf("%kAre you sure?   ", COLOR_WHITE);
@@ -114,11 +115,12 @@ void TakeScreenshot(){
         return;
 
     char *name, *path;
-    const char basepath[] = "sd:/tegraexplorer/screenshots";
+    const char basepath[] = "sd:/backup/screenshots";
     name = malloc(40);
-    s_printf(name, "Screenshot_%08X.bmp", get_tmr_us());
+    s_printf(name, "atlas_%08X.bmp", get_tmr_us());
 
-    f_mkdir("sd:/tegraexplorer");
+    f_mkdir("sd:/backup");
+	f_mkdir("sd:/backup/screenshots");
     f_mkdir(basepath);
     path = CombinePaths(basepath, name);
     free(name);

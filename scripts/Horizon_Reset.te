@@ -3,9 +3,9 @@ is=["8000000000000120","8000000000000053","8000000000000000"]
 p=println
 pr=print
 pe={pause() exit()}
-p("System wiper\n")
-op=["Exit","Wipe sysmmc"].copy()
-if (emu()){op+"Wipe emummc"}
+p("Horizon OS Factory Reset\n")
+op=["Exit","Wipe eMMC"].copy()
+if (emu()){op+"Wipe emuMMC"}
 r=menu(op,0)clear()
 if(r==0){exit()}
 if(r==1){

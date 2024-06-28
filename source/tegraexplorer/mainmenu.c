@@ -26,62 +26,131 @@
 //#define SCRIPT_ONLY 1
 
 #ifdef INCLUDE_BUILTIN_SCRIPTS
-#include "../../build/TegraExplorer/script/builtin.h"
+#include "../../build/ATLAS/script/builtin.h"
 #endif
 
 extern hekate_config h_cfg;
 
 enum {
     #ifndef SCRIPT_ONLY
-    MainExplore = 0,
+    MainInfo = 0,
+    MainCredits,
+    MainRefresh,
+    MainRebootNormal,
+    MainRebootAMS,
+    MainReloadRCM,
+    MainShutdown, 
+    MainHekate,
+    MainExplore,
     MainBrowseSd,
-    MainMountSd,
+    // MainMountSd,
     MainBrowseEmmc,
     MainBrowseEmummc,
-    MainTools,
-    MainPartitionSd,
+    // MainPartitionSd,
+    MainToolbox,
+    MainPicofly,
+    MainInstinct,
+    MainHwfly,
+    MainLockpick,
+    MainLPRCM,
+    MainKeys,
+    MainAmiibos,
     MainViewKeys,
-    MainViewCredits,
-    MainExit,
-    #else 
-    MainExit = 0,
-    #endif
-    MainPowerOff,
-    MainRebootRCM,
-    MainRebootNormal,
-    MainRebootHekate,
-    MainRebootAMS,
+    MainCleaner,
+    MainClean,
+    MainDelete,
     MainScripts,
+    #endif
+    // MainExit,
 };
 
 MenuEntry_t mainMenuEntries[] = {
     #ifndef SCRIPT_ONLY
-    [MainExplore] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "-- Explore --"},
-    [MainBrowseSd] = {.optionUnion = COLORTORGB(COLOR_GREEN), .name = "Browse SD"},
-    [MainMountSd] = {.optionUnion = COLORTORGB(COLOR_YELLOW)}, // To mount/unmount the SD
-    [MainBrowseEmmc] = {.optionUnion = COLORTORGB(COLOR_BLUE), .name = "Browse EMMC"},
-    [MainBrowseEmummc] = {.optionUnion = COLORTORGB(COLOR_BLUE), .name = "Browse EMUMMC"},
-    [MainTools] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n-- Tools --"},
-    [MainPartitionSd] = {.optionUnion = COLORTORGB(COLOR_ORANGE), .name = "Partition the sd"},
-    [MainViewKeys] = {.optionUnion = COLORTORGB(COLOR_YELLOW), .name = "View dumped keys"},
-    [MainViewCredits] = {.optionUnion = COLORTORGB(COLOR_YELLOW), .name = "Credits"},
-    [MainExit] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n-- Exit --"},
-    #else 
-    [MainExit] = {.optionUnion = COLORTORGB(COLOR_WHITE), .name = "\n-- Exit --"},
+    [MainInfo] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "-- ATLAS --"},
+    [MainCredits] = {.optionUnion = COLORTORGB(COLOR_YELLOW), .name = "* Info & Credits\n"},
+    [MainRefresh] = {.optionUnion = COLORTORGB(COLOR_LIME), .name = "* Refresh"}, 
+    [MainRebootNormal] = {.optionUnion = COLORTORGB(COLOR_BLACK), .name = "* Launch OFW"},
+    [MainRebootAMS] = {.optionUnion = COLORTORGB(COLOR_SILVER), .name = "* Launch CFW"},  
+    [MainReloadRCM] = {.optionUnion = COLORTORGB(COLOR_ORANGE), .name = "* Reload RCM"},
+    [MainShutdown] = {.optionUnion = COLORTORGB(COLOR_PURPLE), .name = "* Shutdown"},
+    [MainHekate] = {.optionUnion = COLORTORGB(COLOR_PURPLE), .name = "* Exit"}, 
+    [MainExplore] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n\n-- TegraExplorer --"},
+    [MainBrowseSd] = {.optionUnion = COLORTORGB(COLOR_GREEN), .name = "* Browse SD"},
+    // [MainMountSd] = {.optionUnion = COLORTORGB(COLOR_YELLOW)}, // To mount/unmount the SD
+    [MainBrowseEmmc] = {.optionUnion = COLORTORGB(COLOR_MAROON), .name = "* Browse eMMC"},
+    [MainBrowseEmummc] = {.optionUnion = COLORTORGB(COLOR_MAROON), .name = "* Browse emuMMC"},
+    // [MainPartitionSd] = {.optionUnion = COLORTORGB(COLOR_ORANGE), .name = "Partition the SD Card"},
+    [MainToolbox] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n\n-- Toolboxes --"},
+    [MainPicofly] = {.optionUnion = COLORTORGB(COLOR_NAVY), .name = "* Picofly Toolbox"},
+    [MainInstinct] = {.optionUnion = COLORTORGB(COLOR_TEAL), .name = "* INSTINCT Toolbox"},
+    [MainHwfly] = {.optionUnion = COLORTORGB(COLOR_GRAY), .name = "* Hwfly Toolbox"},
+    [MainLockpick] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n\n-- Lockpick RCM --"},
+    [MainLPRCM] = {.optionUnion = COLORTORGB(COLOR_BLUE), .name = "* Lockpick"},
+    [MainKeys] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "* Dump Keys"},
+    [MainAmiibos] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "* Mariko Partials"},
+    [MainViewKeys] = {.optionUnion = COLORTORGB(COLOR_OLIVE), .name = "* Check dumped keys"},
+    [MainCleaner] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n\n-- ASAP-Cleaner --"},
+    [MainClean] = {.optionUnion = COLORTORGB(COLOR_BLUE), .name = "* Cleanup"},
+    [MainDelete] = {.optionUnion = COLORTORGB(COLOR_MAGENTA), .name = "* Delete Config"},
+    [MainScripts] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n\n-- Scripts --"},
     #endif
-    [MainPowerOff] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "Power off"},
-    [MainRebootRCM] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "Reboot to RCM"},
-    [MainRebootNormal] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "Reboot normally"},
-    [MainRebootHekate] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "Reboot to bootloader/update.bin"},
-    [MainRebootAMS] = {.optionUnion = COLORTORGB(COLOR_VIOLET), .name = "Reboot to atmosphere/reboot_payload.bin"},
-    [MainScripts] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n-- Scripts --"}
+    // [MainExit] = {.optionUnion = COLORTORGB(COLOR_WHITE) | SKIPBIT, .name = "\n-- Exit --"},
 };
+
+extern bool sd_mounted;
+extern bool is_sd_inited;
+extern int launch_payload(char *path);
+
+void ViewCredits(){
+    gfx_clearscreen();
+    WPRINTF("\n\n\n\n\n\n");
+	WPRINTF("                         ___   ______  __     ___    _____ ");
+	WPRINTF("                        /   | /_  __/ / /    /   |  / ___/ ");
+	WPRINTF("                       / /| |  / /   / /    / /| |  \\__ \\ ");
+	WPRINTF("                      / ___ | / /   / /___ / ___ | ___/ / ");
+	WPRINTF("                     /_/  |_|/_/   /_____//_/  |_|/____/ ");
+    WPRINTF("");
+    WPRINTF("                                            only for ASAP");
+    WPRINTF("\n\n\n");
+    WPRINTF("                        A - ASAP Install Supporter");
+    WPRINTF("                        T - TegraExplorer & Toolboxes");
+    WPRINTF("                        L - Lockpick RCM");
+    WPRINTF("                        A - ASAP-Cleaner");
+    WPRINTF("                        S - Scripts");
+    WPRINTF("\n\n\n\n");
+    WPRINTF("                      Credits");
+    WPRINTF("");
+    WPRINTF("                      - Lockpick RCM  : shchmue");
+    WPRINTF("                      - TegraExplorer : SuchMemeManySkill");
+    WPRINTF("                      - Hekate & Nyx  : CTCaer");
+    WPRINTF("");
+    WPRINTF("                      - Hwfly Toolbox    : hwfly-nx");
+    WPRINTF("                      - INSTINCT Toolbox : sthetix");
+    WPRINTF("                      - PiCoFly Toolbox  : rehius");
+    
+    if (hidRead()->r)
+        gfx_printf("%k\"I'm not even sure if it works\" - meme", COLOR_ORANGE);
+
+    hidWait();    
+}
+
+void RefrashAtlas(){
+    launch_payload("sd:/bootloader/sys/module");
+}
+
+void RebootToAMS(){
+    launch_payload("sd:/atmosphere/reboot_payload.bin");
+}
+
+void RebootToHekate(){
+    launch_payload("sd:/bootloader/update.bin");
+}
 
 void HandleSD(){
     gfx_clearscreen();
     TConf.curExplorerLoc = LOC_SD;
     if (!sd_mount() || sd_get_card_removed()){
-        gfx_printf("Sd is not mounted!");
+        gfx_printf("SD Card is not mounted!");
         hidWait();
     }
     else
@@ -94,6 +163,38 @@ void HandleEMMC(){
 
 void HandleEMUMMC(){
     GptMenu(MMC_CONN_EMUMMC);
+}
+
+void MountOrUnmountSD(){
+    gfx_clearscreen();
+    if (sd_mounted)
+        sd_unmount();
+    else if (!sd_mount())
+        hidWait();
+}
+
+void LoadPicofly(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/A003B3224EE66980");
+}
+
+void LoadInstict(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/04003EA0003FF132");
+}
+
+void LoadHwlfy(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/0E7330A8B0EF0440");
+}
+
+void LoadPartials(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/4100A0B0E0RE00F3");
+}
+
+void LoadKeys(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/420E00000311EM04");
+}
+
+void LoadAmiibos(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2353");
 }
 
 void ViewKeys(){
@@ -116,56 +217,42 @@ void ViewKeys(){
             fuseCount++;
     }
 
-    gfx_printf("\n\nPkg1 ID: '%s'\nFuse count: %d", TConf.pkg1ID, fuseCount);
+    gfx_printf("\n\nPkg1 ID: '%s'\nFuse count: %d / 32", TConf.pkg1ID, fuseCount);
 
     hidWait();
 }
 
-void ViewCredits(){
-    gfx_clearscreen();
-    gfx_printf("\nTegraexplorer v%d.%d.%d\nBy SuchMemeManySkill\n\nBased on Lockpick_RCM & Hekate, from shchmue & CTCaer\n\n\n", LP_VER_MJ, LP_VER_MN, LP_VER_BF);
-
-    if (hidRead()->r)
-        gfx_printf("%k\"I'm not even sure if it works\" - meme", COLOR_ORANGE);
-
-    hidWait();
+void LoadClean(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/72E003B00S11003B");
 }
-
-extern bool sd_mounted;
-extern bool is_sd_inited;
-extern int launch_payload(char *path);
-
-void RebootToAMS(){
-    launch_payload("sd:/atmosphere/reboot_payload.bin");
-}
-
-void RebootToHekate(){
-    launch_payload("sd:/bootloader/update.bin");
-}
-
-void MountOrUnmountSD(){
-    gfx_clearscreen();
-    if (sd_mounted)
-        sd_unmount();
-    else if (!sd_mount())
-        hidWait();
+void LoadDelete(){
+    launch_payload("sd:/atmosphere/contents/010B6ECF3B30D000/01/98VNNM0800600E1A");
 }
 
 menuPaths mainMenuPaths[] = {
     #ifndef SCRIPT_ONLY
+    [MainCredits] = ViewCredits,
+    [MainRefresh] = RefrashAtlas,
+    [MainRebootNormal] = reboot_normal,
+    [MainRebootAMS] = RebootToAMS,
+    [MainReloadRCM] = reboot_rcm,
+    [MainShutdown] = power_off, 
+    [MainHekate] = RebootToHekate,
     [MainBrowseSd] = HandleSD,
-    [MainMountSd] = MountOrUnmountSD,
+    // [MainMountSd] = MountOrUnmountSD,
     [MainBrowseEmmc] = HandleEMMC,
     [MainBrowseEmummc] = HandleEMUMMC,
-    [MainPartitionSd] = FormatSD,
+    // [MainPartitionSd] = FormatSD,
+    [MainPicofly] = LoadPicofly,
+    [MainInstinct] = LoadInstict,
+    [MainHwfly] = LoadHwlfy,
+    [MainLPRCM] = LoadPartials,
+    [MainKeys] = LoadKeys,
+    [MainAmiibos] = LoadAmiibos,
     [MainViewKeys] = ViewKeys,
-    [MainViewCredits] = ViewCredits,
-    #endif
-    [MainRebootAMS] = RebootToAMS,
-    [MainRebootHekate] = RebootToHekate,
-    [MainRebootRCM] = reboot_rcm,
-    [MainPowerOff] = power_off,
-    [MainRebootNormal] = reboot_normal,
+    [MainClean] = LoadClean, 
+    [MainDelete] = LoadDelete, 
+    #endif  
 };
 
 void EnterMainMenu(){
@@ -175,25 +262,37 @@ void EnterMainMenu(){
             sd_unmount();
 
         #ifndef SCRIPT_ONLY
-        // -- Explore --
-        mainMenuEntries[MainBrowseSd].hide = !sd_mounted;
-        mainMenuEntries[MainMountSd].name = (sd_mounted) ? "Unmount SD" : "Mount SD";
-        mainMenuEntries[MainBrowseEmummc].hide = (!emu_cfg.enabled || !sd_mounted);
-
-        // -- Tools --
-        mainMenuEntries[MainPartitionSd].hide = (!is_sd_inited || sd_get_card_removed());
-        mainMenuEntries[MainViewKeys].hide = !TConf.keysDumped;
-
-        // -- Exit --
+        // -- ATLAS --
+        mainMenuEntries[MainRefresh].hide = (!sd_mounted || !FileExists("sd:/bootloader/sys/module"));
         mainMenuEntries[MainRebootAMS].hide = (!sd_mounted || !FileExists("sd:/atmosphere/reboot_payload.bin"));
-        mainMenuEntries[MainRebootHekate].hide = (!sd_mounted || !FileExists("sd:/bootloader/update.bin"));
-        mainMenuEntries[MainRebootRCM].hide = h_cfg.t210b01;
+        mainMenuEntries[MainHekate].hide = (!sd_mounted || !FileExists("sd:/bootloader/update.bin"));
+        
+        // -- TegraExplorer --
+        mainMenuEntries[MainBrowseSd].hide = !sd_mounted;
+        // mainMenuEntries[MainMountSd].name = (sd_mounted) ? "Unmount SD" : "Mount SD";
+        mainMenuEntries[MainBrowseEmummc].hide = (!emu_cfg.enabled || !sd_mounted);
+        // mainMenuEntries[MainPartitionSd].hide = (!is_sd_inited || sd_get_card_removed());
+        
+        // -- Toolboxes --
+        mainMenuEntries[MainPicofly].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/A003B3224EE66980"));
+        mainMenuEntries[MainInstinct].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/04003EA0003FF132"));
+        mainMenuEntries[MainHwfly].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/0E7330A8B0EF0440"));
+        
+        // -- Lockpick RCM --
+        mainMenuEntries[MainLPRCM].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/4100A0B0E0RE00F3"));
+        mainMenuEntries[MainKeys].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/420E00000311EM04"));
+        mainMenuEntries[MainAmiibos].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2353"));
+        mainMenuEntries[MainViewKeys].hide = !TConf.keysDumped;
+        
+        // -- ASAP-Cleaner --
+        mainMenuEntries[MainClean].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/72E003B00S11003B"));
+        mainMenuEntries[MainDelete].hide = (!sd_mounted || !FileExists("sd:/atmosphere/contents/010B6ECF3B30D000/01/98VNNM0800600E1A"));
         #endif
         // -- Scripts --
         #ifndef INCLUDE_BUILTIN_SCRIPTS
-        mainMenuEntries[MainScripts].hide = (!sd_mounted || !FileExists("sd:/tegraexplorer/scripts"));
+        mainMenuEntries[MainScripts].hide = (!sd_mounted || !FileExists("sd:/backup/scripts"));
         #else
-        mainMenuEntries[MainScripts].hide = ((!sd_mounted || !FileExists("sd:/tegraexplorer/scripts")) && !EMBEDDED_SCRIPTS_LEN);
+        mainMenuEntries[MainScripts].hide = ((!sd_mounted || !FileExists("sd:/backup/scripts")) && !EMBEDDED_SCRIPTS_LEN);
         #endif
 
         Vector_t ent = newVec(sizeof(MenuEntry_t), ARRAY_SIZE(mainMenuEntries));
@@ -204,13 +303,13 @@ void EnterMainMenu(){
 
         #ifdef INCLUDE_BUILTIN_SCRIPTS
         for (int i = 0; i < EMBEDDED_SCRIPTS_LEN; i++){
-            MenuEntry_t m = {.name = embedded_scripts_g[i].name, .optionUnion = COLORTORGB(COLOR_BLUE), .icon = 128};
+            MenuEntry_t m = {.name = embedded_scripts_g[i].name, .optionUnion = COLORTORGB(COLOR_AQUA), .icon = 128};
             vecAdd(&ent, m);
         }
         #endif
 
-        if (sd_mounted && FileExists("sd:/tegraexplorer/scripts")){
-            scriptFiles = ReadFolder("sd:/tegraexplorer/scripts", &res);
+        if (sd_mounted && FileExists("sd:/backup/scripts")){
+            scriptFiles = ReadFolder("sd:/backup/scripts", &res);
             if (!res){
                 if (!scriptFiles.count){
                     FREE(scriptFiles.data);
@@ -254,7 +353,7 @@ void EnterMainMenu(){
                 vecDefArray(MenuEntry_t*, entArray, ent);
                 MenuEntry_t entry = entArray[res];
                 FSEntry_t fsEntry = {.name = entry.name, .sizeUnion = entry.sizeUnion};
-                RunScript("sd:/tegraexplorer/scripts", fsEntry);
+                RunScript("sd:/backup/scripts", fsEntry);
             #ifdef INCLUDE_BUILTIN_SCRIPTS
             }
             #endif

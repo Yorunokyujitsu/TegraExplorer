@@ -59,6 +59,12 @@
 
 hekate_config h_cfg;
 boot_cfg_t __attribute__((section ("._boot_cfg"))) b_cfg;
+const volatile ipl_ver_meta_t __attribute__((section ("._ipl_version"))) ipl_ver = {
+	.magic = LP_MAGIC,
+	.version = (LP_VER_MJ + '0') | ((LP_VER_MN + '0') << 8) | ((LP_VER_BF + '0') << 16),
+	.rsvd0 = 0,
+	.rsvd1 = 0
+};
 
 volatile nyx_storage_t *nyx_str = (nyx_storage_t *)NYX_STORAGE_ADDR;
 
@@ -237,7 +243,7 @@ void ipl_main()
 	heap_init(IPL_HEAP_START);
 
 #ifdef DEBUG_UART_PORT
-	uart_send(DEBUG_UART_PORT, (u8 *)"hekate: Hello!\r\n", 16);
+	uart_send(DEBUG_UART_PORT, (u8 *)"Hekate: Hello!\r\n", 16);
 	uart_wait_idle(DEBUG_UART_PORT, UART_TX_IDLE);
 #endif
 
@@ -281,8 +287,13 @@ void ipl_main()
 
 	int res = -1;
 
-	if (btn_read() & BTN_VOL_DOWN || DumpKeys())
-		res = GetKeysFromFile("sd:/switch/prod.keys");
+	if (f_stat("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355", NULL) == FR_OK)
+			launch_payload("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355");
+			
+	if (FileExists("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/01001FF3CDEC5000"))
+		RunScript("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/", newFSEntry("01001FF3CDEC5000"));
+				
+	res = GetKeysFromFile("sd:/backup/keys/prod.keys");
 
 	TConf.keysDumped = (res > 0) ? 0 : 1;
 
@@ -293,10 +304,7 @@ void ipl_main()
 		SetKeySlots();
 	
 	if (res == 0)
-		hidWait();
-
-	if (FileExists("sd:/startup.te"))
-		RunScript("sd:/", newFSEntry("startup.te"));
+		EnterMainMenu();
 
 	EnterMainMenu();
 

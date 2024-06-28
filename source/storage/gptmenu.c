@@ -73,7 +73,7 @@ void GptMenu(u8 MMCType){
     int res = 0;
     while (1){
         gfx_clearscreen();
-        gfx_printf((MMCType == MMC_CONN_EMMC) ? "-- Emmc --\n\n" : "-- Emummc --\n\n");
+        gfx_printf((MMCType == MMC_CONN_EMMC) ? "-- eMMC --\n\n" : "-- emuMMC --\n\n");
 
         res = newMenu(&GptMenu, res, 40, 20, ALWAYSREDRAW | ENABLEB, GptMenu.count);
 
@@ -131,10 +131,10 @@ void GptMenu(u8 MMCType){
                 RESETCOLOR;
                 gfx_printf("Dumping %s... ", entries[res].name);
 
-                f_mkdir("sd:/tegraexplorer");
-                f_mkdir("sd:/tegraexplorer/Dumps");
+                f_mkdir("sd:/backup");
+                f_mkdir("sd:/backup/Dumps");
 
-                char *path = CombinePaths("sd:/tegraexplorer/Dumps", entries[res].name);
+                char *path = CombinePaths("sd:/backup/Dumps", entries[res].name);
 
                 ErrCode_t a = DumpOrWriteEmmcPart(path, entries[res].name, 0, 0);
                 if (a.err){

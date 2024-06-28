@@ -1,0 +1,82 @@
+BLUE = 0x3b84d7
+YELLOW = 0xFFFF00
+RED = 0xFF0000
+GREEN = 0x00FF00
+WHITE = 0xFFFFFF
+ORANGE = 0xFFA500
+VIOLET = 0x8F00FF
+
+p=println
+pe={pause() exit()}
+
+color(BLUE);
+p("TegraScript Syncfix.te by MezBar");
+p("Ported to TegraScript v3 by xHR")
+p("");
+color(YELLOW);
+p("This script will fix joy-cons sync issue between eMMC and emuMMC");
+p("Before using this script, pair all your joy-con and controllers to your eMMC");
+p("");
+color(RED);
+p("If you're running 90DNS or any other DNS settings");
+p("please go in airplane mode on both eMMC");
+p("and emuMMC because this script will copy");
+p("also the wifi settings from your eMMC to emuMMC");
+p("");
+color(GREEN);
+p("If you're running incognito you can proceed without go in airplane mode");
+p("");
+color(WHITE);
+
+p("");
+p("Press 'X' to sync both WiFi and Bluetooth settings from eMMC to emuMMC");
+p("");
+color(ORANGE);
+p("Press any other button to exit");
+p("");
+
+
+op=["Exit","Sync both WiFi and Bluetooth settings from eMMC to emuMMC"].copy()
+if (emu()){op+"Wipe emuMMC"}
+r=menu(op,0)clear()
+if(r==0){exit()}
+
+p("");
+if(r==1){if(!emu()){p("emuMMC not found!")pe()}}
+color(WHITE);
+p("Mounting eMMC...");
+if(mountsys("SYSTEM")){p("Mount failed!")pe()}
+
+
+mkdir("sd:/backup/syncfix");
+mkdir("sd:/backup/syncfix/backup");
+p("Backing up eMMC 8000000000000050 file to sd:/backup/syncfix/backup");
+copyfile("bis:/save/8000000000000050", "sd:/backup/syncfix/backup/8000000000000050_sysmmc_backup");
+
+
+color(VIOLET);
+p("Mounting eumMMC");
+
+if(mountemu("SYSTEM")){p("Mount failed!")pe()}
+
+
+p("Backing up emuMMC 8000000000000050 file to sd:/backup/syncfix/backup");
+p("");
+copyfile("bis:/save/8000000000000050", "sd:/backup/syncfix/backup/8000000000000050_emummc_backup");
+
+
+p("Copying 8000000000000050 file from eMMC to emuMMC");
+p("");
+copyfile("sd:/backup/syncfix/backup/8000000000000050_sysmmc_backup", "bis:/save/8000000000000050");
+
+
+color(GREEN);
+p("DONE!");
+p("");
+p("Now your joy-cons should be synched between eMMC and emuMMC");
+p("");
+
+color(ORANGE);
+p("Press any button to exit");
+
+pe();

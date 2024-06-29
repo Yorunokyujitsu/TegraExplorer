@@ -287,13 +287,8 @@ void ipl_main()
 
 	int res = -1;
 
-	if (f_stat("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355", NULL) == FR_OK)
-			launch_payload("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355");
-			
-	if (FileExists("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/01001FF3CDEC5000"))
-		RunScript("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/", newFSEntry("01001FF3CDEC5000"));
-				
-	res = GetKeysFromFile("sd:/backup/keys/prod.keys");
+	if (DumpKeys())
+		res = GetKeysFromFile("sd:/backup/keys/prod.keys");
 
 	TConf.keysDumped = (res > 0) ? 0 : 1;
 
@@ -303,9 +298,13 @@ void ipl_main()
 	if (TConf.keysDumped)
 		SetKeySlots();
 	
-	if (res == 0)
-		EnterMainMenu();
-
+	if (res == 0) {
+        if (f_stat("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355", NULL) == FR_OK)
+            launch_payload("atmosphere/contents/010B6ECF3B30D000/01/E01188900BFF2355");
+        
+        if (FileExists("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/01001FF3CDEC5000"))
+            RunScript("sd:/ASAP/atmosphere/contents/010B6ECF3B30D000/01/", newFSEntry("01001FF3CDEC5000"));
+    }
 	EnterMainMenu();
 
 	// Halt BPMP if we managed to get out of execution.

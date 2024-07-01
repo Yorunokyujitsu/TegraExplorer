@@ -287,8 +287,7 @@ void ipl_main()
 
 	int res = -1;
 
-	if (DumpKeys())
-		res = GetKeysFromFile("sd:/backup/keys/prod.keys");
+	res = GetKeysFromFile("sd:/backup/keys/prod.keys");
 
 	TConf.keysDumped = (res > 0) ? 0 : 1;
 
